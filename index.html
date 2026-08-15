@@ -8,7 +8,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="apple-touch-icon" href="./apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="韓国語単語">
 
 <style>
@@ -20,12 +20,12 @@
 html,body{margin:0;min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",Meiryo,sans-serif;background:var(--bg);color:var(--text)}
 button,select,textarea,input{font:inherit}
 button{touch-action:manipulation}
-.app{max-width:760px;margin:0 auto;padding:18px 16px 40px}
+.app{max-width:760px;margin:0 auto;padding:calc(18px + env(safe-area-inset-top)) 16px calc(40px + env(safe-area-inset-bottom))}
 .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
 .brand{font-weight:800;letter-spacing:.01em}
 .meta{font-size:12px;color:var(--muted);text-align:right}
 .controls{display:grid;grid-template-columns:1fr auto auto;gap:8px;margin-bottom:12px}
-select,.ghost{border:1px solid var(--line);background:#fff;border-radius:12px;padding:10px 12px;color:var(--text)}
+select,.ghost{border:1px solid var(--line);background:#fff;border-radius:12px;padding:11px 12px;color:var(--text);min-height:44px}
 .ghost{cursor:pointer}
 .progress{height:6px;background:#e8e8ed;border-radius:99px;overflow:hidden;margin:10px 0 16px}
 .progress>div{height:100%;width:0;background:var(--accent);transition:width .25s ease}
@@ -55,17 +55,17 @@ select,.ghost{border:1px solid var(--line);background:#fff;border-radius:12px;pa
 .secondary{background:#f2f2f7;color:var(--text)}
 .good{background:#e9f7ef;color:var(--good)}
 .bad{background:#fff0ef;color:var(--bad)}
-.footerNav{display:flex;justify-content:space-between;gap:8px;margin-top:12px}
+.footerNav{display:flex;justify-content:space-between;gap:8px;margin-top:12px;padding-bottom:max(8px,env(safe-area-inset-bottom))}
 .small{font-size:12px;color:var(--muted)}
 .stats{font-size:12px;color:var(--muted);margin-top:14px;text-align:center}
-.progressBtn{border:1px solid var(--line);background:#fff;border-radius:12px;padding:10px 12px;color:var(--text);cursor:pointer;font-weight:750}
+.progressBtn{border:1px solid var(--line);background:#fff;border-radius:12px;padding:11px 12px;color:var(--text);cursor:pointer;font-weight:750;min-height:44px}
 .dashboard{position:fixed;inset:0;background:var(--bg);z-index:50;overflow:auto;display:none}
 .dashboard.show{display:block}
-.dashWrap{max-width:760px;margin:0 auto;padding:18px 16px 40px}
+.dashWrap{max-width:760px;margin:0 auto;padding:calc(18px + env(safe-area-inset-top)) 16px calc(40px + env(safe-area-inset-bottom))}
 .dashTop{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px}
 .dashTitle{font-size:24px;font-weight:850}
 .dashSub{font-size:13px;color:var(--muted);margin-top:3px}
-.dashClose{border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:12px;padding:10px 14px;cursor:pointer}
+.dashClose{border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:12px;padding:11px 14px;cursor:pointer;min-height:44px}
 .kpiGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px}
 .kpi{background:var(--panel);border-radius:18px;padding:16px;box-shadow:var(--shadow)}
 .kpiNum{font-size:30px;font-weight:850;line-height:1.1}
@@ -94,8 +94,8 @@ select,.ghost{border:1px solid var(--line);background:#fff;border-radius:12px;pa
 .toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);background:#111;color:#fff;padding:10px 14px;border-radius:999px;font-size:13px;opacity:0;pointer-events:none;transition:.2s;z-index:10}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 @media(max-width:560px){
-  .app{padding:10px 10px 28px}
-  .card{min-height:calc(100vh - 170px);border-radius:20px;padding:20px 18px}
+  .app{padding:calc(12px + env(safe-area-inset-top)) 10px calc(28px + env(safe-area-inset-bottom))}
+  .card{min-height:max(430px,calc(100dvh - 250px - env(safe-area-inset-top) - env(safe-area-inset-bottom)));border-radius:20px;padding:20px 18px}
   .korean{font-size:52px}
   .meaning{font-size:25px}
   .exampleKo{font-size:27px}
@@ -118,7 +118,7 @@ select,.ghost{border:1px solid var(--line);background:#fff;border-radius:12px;pa
 <div class="app">
   <div class="topbar">
     <div>
-      <div class="brand">韓国語フラッシュカード <span class="small">v2.4</span></div>
+      <div class="brand">韓国語フラッシュカード <span class="small">v2.5</span></div>
       <div class="small" id="deckCount"></div>
     </div>
     <div class="meta"><span id="cardId"></span><br><span id="lesson"></span></div>
