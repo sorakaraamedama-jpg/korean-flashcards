@@ -58,6 +58,39 @@ select,.ghost{border:1px solid var(--line);background:#fff;border-radius:12px;pa
 .footerNav{display:flex;justify-content:space-between;gap:8px;margin-top:12px}
 .small{font-size:12px;color:var(--muted)}
 .stats{font-size:12px;color:var(--muted);margin-top:14px;text-align:center}
+.progressBtn{border:1px solid var(--line);background:#fff;border-radius:12px;padding:10px 12px;color:var(--text);cursor:pointer;font-weight:750}
+.dashboard{position:fixed;inset:0;background:var(--bg);z-index:50;overflow:auto;display:none}
+.dashboard.show{display:block}
+.dashWrap{max-width:760px;margin:0 auto;padding:18px 16px 40px}
+.dashTop{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px}
+.dashTitle{font-size:24px;font-weight:850}
+.dashSub{font-size:13px;color:var(--muted);margin-top:3px}
+.dashClose{border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:12px;padding:10px 14px;cursor:pointer}
+.kpiGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px}
+.kpi{background:var(--panel);border-radius:18px;padding:16px;box-shadow:var(--shadow)}
+.kpiNum{font-size:30px;font-weight:850;line-height:1.1}
+.kpiLabel{font-size:12px;color:var(--muted);margin-top:5px}
+.panel{background:var(--panel);border-radius:20px;padding:18px;box-shadow:var(--shadow);margin-bottom:14px}
+.panelTitle{font-size:16px;font-weight:800;margin-bottom:12px}
+.masteryRing{width:150px;height:150px;border-radius:50%;margin:4px auto 12px;display:grid;place-items:center;background:conic-gradient(var(--accent) var(--pct), #e8e8ed 0)}
+.masteryInner{width:118px;height:118px;border-radius:50%;background:var(--panel);display:grid;place-items:center;text-align:center}
+.masteryPct{font-size:30px;font-weight:900}
+.masteryTxt{font-size:11px;color:var(--muted)}
+.levelGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.levelBox{background:#f6f6f8;border-radius:14px;padding:12px;text-align:center}
+.levelNum{font-size:22px;font-weight:850}
+.levelLabel{font-size:11px;color:var(--muted);margin-top:3px}
+.barRow{margin:12px 0}
+.barHead{display:flex;justify-content:space-between;gap:12px;font-size:13px;margin-bottom:6px}
+.miniBar{height:10px;background:#e8e8ed;border-radius:999px;overflow:hidden}
+.miniBar>div{height:100%;background:var(--accent);border-radius:999px}
+.weakList{display:flex;flex-direction:column;gap:8px}
+.weakItem{border:1px solid var(--line);background:transparent;border-radius:14px;padding:12px;text-align:left;cursor:pointer;color:var(--text)}
+.weakWord{font-family:"Apple SD Gothic Neo","Noto Sans KR",sans-serif;font-size:19px;font-weight:800}
+.weakMeta{font-size:12px;color:var(--muted);margin-top:3px}
+.emptyMsg{font-size:13px;color:var(--muted);padding:8px 0}
+.legend{font-size:12px;line-height:1.65;color:var(--muted)}
+
 .toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);background:#111;color:#fff;padding:10px 14px;border-radius:999px;font-size:13px;opacity:0;pointer-events:none;transition:.2s;z-index:10}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 @media(max-width:560px){
@@ -67,12 +100,14 @@ select,.ghost{border:1px solid var(--line);background:#fff;border-radius:12px;pa
   .meaning{font-size:25px}
   .exampleKo{font-size:27px}
   .exampleJa{font-size:20px}
-  .controls{grid-template-columns:1fr auto}
-  .controls .ghost:nth-child(3){display:none}
+  .controls{grid-template-columns:1fr auto auto}
+  .controls #resetBtn{display:none}
 }
 @media(prefers-color-scheme:dark){
   :root{--bg:#111214;--panel:#1c1c1e;--text:#f5f5f7;--muted:#98989d;--line:#343438;--shadow:none}
   select,.ghost{background:#1c1c1e;color:#f5f5f7}
+  .progressBtn,.dashClose{background:#1c1c1e;color:#f5f5f7}
+  .levelBox{background:#2c2c2e}
   .badge,.play,.secondary{background:#2c2c2e}
   .memo{background:#242426;color:#fff} .explanation{background:#242426;color:#f5f5f7}
   .good{background:#173b2a} .bad{background:#421e1b}
@@ -83,7 +118,7 @@ select,.ghost{border:1px solid var(--line);background:#fff;border-radius:12px;pa
 <div class="app">
   <div class="topbar">
     <div>
-      <div class="brand">韓国語フラッシュカード <span class="small">v2.2</span></div>
+      <div class="brand">韓国語フラッシュカード <span class="small">v2.3</span></div>
       <div class="small" id="deckCount"></div>
     </div>
     <div class="meta"><span id="cardId"></span><br><span id="lesson"></span></div>
@@ -97,6 +132,7 @@ select,.ghost{border:1px solid var(--line);background:#fff;border-radius:12px;pa
       <option value="fav">★ お気に入り</option>
     </select>
     <button class="ghost" id="shuffleBtn">⇄ シャッフル</button>
+    <button class="progressBtn" id="progressBtn">📊 進捗</button>
     <button class="ghost" id="resetBtn">進捗リセット</button>
   </div>
 
@@ -159,6 +195,57 @@ select,.ghost{border:1px solid var(--line);background:#fff;border-radius:12px;pa
     <button class="ghost" id="nextBtn">次 →</button>
   </div>
 </div>
+
+<div class="dashboard" id="dashboard" aria-hidden="true">
+  <div class="dashWrap">
+    <div class="dashTop">
+      <div>
+        <div class="dashTitle">学習進捗</div>
+        <div class="dashSub" id="dashScope">全910語の記録</div>
+      </div>
+      <button class="dashClose" id="dashClose">戻る</button>
+    </div>
+
+    <div class="panel">
+      <div class="masteryRing" id="masteryRing" style="--pct:0%">
+        <div class="masteryInner">
+          <div>
+            <div class="masteryPct" id="masteryPct">0%</div>
+            <div class="masteryTxt">習得目安</div>
+          </div>
+        </div>
+      </div>
+      <div class="legend">「覚えた」は、同じ単語で <b>正解3回以上</b> かつ <b>正解回数が「もう一度」回数を上回る</b> 場合の目安です。</div>
+    </div>
+
+    <div class="kpiGrid">
+      <div class="kpi"><div class="kpiNum" id="kpiStudied">0</div><div class="kpiLabel">学習した単語</div></div>
+      <div class="kpi"><div class="kpiNum" id="kpiMastered">0</div><div class="kpiLabel">覚えた目安</div></div>
+      <div class="kpi"><div class="kpiNum" id="kpiAccuracy">—</div><div class="kpiLabel">正答率</div></div>
+      <div class="kpi"><div class="kpiNum" id="kpiAttempts">0</div><div class="kpiLabel">回答総回数</div></div>
+    </div>
+
+    <div class="panel">
+      <div class="panelTitle">現在の状態</div>
+      <div class="levelGrid">
+        <div class="levelBox"><div class="levelNum" id="lvMastered">0</div><div class="levelLabel">覚えた</div></div>
+        <div class="levelBox"><div class="levelNum" id="lvLearning">0</div><div class="levelLabel">学習中</div></div>
+        <div class="levelBox"><div class="levelNum" id="lvUnseen">0</div><div class="levelLabel">未学習</div></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panelTitle">級別の進捗</div>
+      <div id="gradeBars"></div>
+    </div>
+
+    <div class="panel">
+      <div class="panelTitle">苦手になっている単語</div>
+      <div class="weakList" id="weakList"></div>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -211,6 +298,114 @@ function shuffleArray(a){
   for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; }
 }
 function cardNow(){ return deck[pos]; }
+
+function allMergedCards(){
+  return CARDS.map(c=>merged(c));
+}
+function cardStatus(c){
+  const cc=Number(c.correct_count||0), wc=Number(c.wrong_count||0);
+  if(cc+wc===0) return "unseen";
+  if(cc>=3 && cc>wc) return "mastered";
+  return "learning";
+}
+function progressStats(cards){
+  let studied=0,mastered=0,learning=0,unseen=0,correct=0,wrong=0;
+  cards.forEach(c=>{
+    const cc=Number(c.correct_count||0), wc=Number(c.wrong_count||0);
+    correct+=cc; wrong+=wc;
+    const s=cardStatus(c);
+    if(s==="unseen") unseen++;
+    else {
+      studied++;
+      if(s==="mastered") mastered++;
+      else learning++;
+    }
+  });
+  return {total:cards.length,studied,mastered,learning,unseen,correct,wrong};
+}
+function renderDashboard(){
+  const cards=allMergedCards();
+  const s=progressStats(cards);
+  const pct=s.total?Math.round(s.mastered/s.total*100):0;
+  const attempts=s.correct+s.wrong;
+  const accuracy=attempts?Math.round(s.correct/attempts*100):null;
+
+  document.getElementById("masteryPct").textContent=pct+"%";
+  document.getElementById("masteryRing").style.setProperty("--pct",pct+"%");
+  document.getElementById("kpiStudied").textContent=s.studied;
+  document.getElementById("kpiMastered").textContent=s.mastered;
+  document.getElementById("kpiAccuracy").textContent=accuracy===null?"—":accuracy+"%";
+  document.getElementById("kpiAttempts").textContent=attempts;
+  document.getElementById("lvMastered").textContent=s.mastered;
+  document.getElementById("lvLearning").textContent=s.learning;
+  document.getElementById("lvUnseen").textContent=s.unseen;
+  document.getElementById("dashScope").textContent=`全${s.total}語 ・ 学習済み ${s.studied}語`;
+
+  const gradeBars=document.getElementById("gradeBars");
+  gradeBars.innerHTML="";
+  ["5級","4級"].forEach(g=>{
+    const group=cards.filter(c=>(c.lesson||"").startsWith(g+"_"));
+    if(!group.length) return;
+    const gs=progressStats(group);
+    const gp=gs.total?Math.round(gs.mastered/gs.total*100):0;
+    const row=document.createElement("div");
+    row.className="barRow";
+    row.innerHTML=`<div class="barHead"><b>${g}</b><span>${gs.mastered}/${gs.total}語 ・ ${gp}%</span></div><div class="miniBar"><div style="width:${gp}%"></div></div>`;
+    gradeBars.appendChild(row);
+  });
+
+  const weak=cards
+    .filter(c=>Number(c.wrong_count||0)>0)
+    .sort((a,b)=>{
+      const as=Number(a.wrong_count||0)-Number(a.correct_count||0)*0.35;
+      const bs=Number(b.wrong_count||0)-Number(b.correct_count||0)*0.35;
+      return bs-as || Number(b.wrong_count||0)-Number(a.wrong_count||0);
+    })
+    .slice(0,10);
+
+  const list=document.getElementById("weakList");
+  list.innerHTML="";
+  if(!weak.length){
+    list.innerHTML='<div class="emptyMsg">まだ「もう一度」の記録はありません。</div>';
+  } else {
+    weak.forEach(c=>{
+      const btn=document.createElement("button");
+      btn.className="weakItem";
+      btn.innerHTML=`<div class="weakWord">${c.korean}</div><div class="weakMeta">${c.meaning}　｜　覚えた ${Number(c.correct_count||0)}回・もう一度 ${Number(c.wrong_count||0)}回</div>`;
+      btn.onclick=()=>jumpToCard(c.id);
+      list.appendChild(btn);
+    });
+  }
+}
+function openDashboard(){
+  persistMemo();
+  renderDashboard();
+  const d=document.getElementById("dashboard");
+  d.classList.add("show");
+  d.setAttribute("aria-hidden","false");
+  document.body.style.overflow="hidden";
+}
+function closeDashboard(){
+  const d=document.getElementById("dashboard");
+  d.classList.remove("show");
+  d.setAttribute("aria-hidden","true");
+  document.body.style.overflow="";
+}
+function jumpToCard(id){
+  closeDashboard();
+  document.getElementById("deckFilter").value="all";
+  state.filter="all";
+  shuffled=false;
+  state.shuffled=false;
+  buildDeck();
+  const idx=deck.findIndex(c=>c.id===id);
+  if(idx>=0){
+    pos=idx;
+    state.currentId=id;
+    stage=0;
+    render(true);
+  }
+}
 function showToast(t){
   const el=document.getElementById("toast"); el.textContent=t; el.classList.add("show");
   setTimeout(()=>el.classList.remove("show"),1200);
@@ -304,6 +499,8 @@ document.getElementById("shuffleBtn").onclick=()=>{
   document.getElementById("shuffleBtn").textContent=shuffled ? "⇄ シャッフル中" : "⇄ シャッフル";
   buildDeck(); showToast(shuffled ? "シャッフル ON" : "シャッフル OFF");
 };
+document.getElementById("progressBtn").onclick=openDashboard;
+document.getElementById("dashClose").onclick=closeDashboard;
 document.getElementById("resetBtn").onclick=()=>{
   if(confirm("学習回数・お気に入り・メモ・現在位置をリセットしますか？")){
     localStorage.removeItem(STORAGE_KEY); location.reload();
@@ -314,6 +511,7 @@ document.getElementById("card").addEventListener("click",(e)=>{
   if(stage<4) setStage(stage+1);
 });
 document.addEventListener("keydown",(e)=>{
+  if(e.key==="Escape" && document.getElementById("dashboard").classList.contains("show")){ closeDashboard(); return; }
   if(e.target.tagName==="TEXTAREA") return;
   if(e.key===" " || e.key==="Enter"){ e.preventDefault(); if(stage<4) setStage(stage+1); }
   if(e.key==="ArrowRight") move(1);
