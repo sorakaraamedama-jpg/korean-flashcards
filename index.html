@@ -49,7 +49,7 @@ select,.ghost{border:1px solid var(--line);background:#fff;border-radius:12px;pa
 .exampleJa{font-size:22px;line-height:1.55}
 .explanation{font-size:17px;line-height:1.78;text-align:left;white-space:pre-line;background:#fafafa;border:1px solid var(--line);border-radius:16px;padding:16px;margin-top:8px}
 .memo{width:100%;min-height:82px;resize:vertical;border:1px solid var(--line);border-radius:14px;padding:12px;background:#fafafa;color:var(--text)}
-.actionbar{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:22px}
+.actionbar{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}
 .primary,.good,.bad,.secondary{border:0;border-radius:14px;padding:14px 16px;font-weight:750;cursor:pointer}
 .primary{background:var(--text);color:#fff;grid-column:1 / -1}
 .secondary{background:#f2f2f7;color:var(--text)}
@@ -118,7 +118,7 @@ select,.ghost{border:1px solid var(--line);background:#fff;border-radius:12px;pa
 <div class="app">
   <div class="topbar">
     <div>
-      <div class="brand">韓国語フラッシュカード <span class="small">v2.5</span></div>
+      <div class="brand">韓国語フラッシュカード <span class="small">v2.6</span></div>
       <div class="small" id="deckCount"></div>
     </div>
     <div class="meta"><span id="cardId"></span><br><span id="lesson"></span></div>
@@ -185,6 +185,8 @@ select,.ghost{border:1px solid var(--line);background:#fff;border-radius:12px;pa
     </div>
 
     <div class="actionbar" id="actionbar">
+      <button class="bad" id="wrongBtn">× もう一度</button>
+      <button class="good" id="correctBtn">○ 覚えた</button>
       <button class="primary" id="revealBtn">日本語訳と読みを表示</button>
     </div>
     <div class="stats" id="stats"></div>
@@ -451,11 +453,12 @@ function setStage(n){
     s.classList.toggle("show", sn <= stage);
   });
   const bar=document.getElementById("actionbar");
-  if(stage===0) bar.innerHTML='<button class="primary" id="revealBtn">日本語訳と読みを表示</button>';
-  if(stage===1) bar.innerHTML='<button class="primary" id="revealBtn">例文を表示</button>';
-  if(stage===2) bar.innerHTML='<button class="primary" id="revealBtn">例文の訳を表示</button>';
-  if(stage===3) bar.innerHTML='<button class="primary" id="revealBtn">例文の解説を表示</button>';
-  if(stage===4) bar.innerHTML='<button class="bad" id="wrongBtn">× もう一度</button><button class="good" id="correctBtn">○ 覚えた</button>';
+  const gradeButtons='<button class="bad" id="wrongBtn">× もう一度</button><button class="good" id="correctBtn">○ 覚えた</button>';
+  if(stage===0) bar.innerHTML=gradeButtons+'<button class="primary" id="revealBtn">日本語訳と読みを表示</button>';
+  if(stage===1) bar.innerHTML=gradeButtons+'<button class="primary" id="revealBtn">例文を表示</button>';
+  if(stage===2) bar.innerHTML=gradeButtons+'<button class="primary" id="revealBtn">例文の訳を表示</button>';
+  if(stage===3) bar.innerHTML=gradeButtons+'<button class="primary" id="revealBtn">例文の解説を表示</button>';
+  if(stage===4) bar.innerHTML=gradeButtons;
   const r=document.getElementById("revealBtn"); if(r) r.onclick=()=>setStage(stage+1);
   const w=document.getElementById("wrongBtn"); if(w) w.onclick=()=>grade(false);
   const c=document.getElementById("correctBtn"); if(c) c.onclick=()=>grade(true);
